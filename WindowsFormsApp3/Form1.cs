@@ -15,18 +15,7 @@ using Newtonsoft.Json;
 
 namespace WindowsFormsApp3
 {
-    /*
-     * Hello Stephen So as you can see there is a new Theme to the Project currently finished writing the code that is going to 
-     * Algorithm Finished - > lock the folder
-     * Algorithm Finished - > hash the user password 
-     * and now I am still working ont the code that is going to encrypt everything in the selected folder  and redirect the user to the Open Existing Folder.
-     * 
-     * Your and I task is to encrypt everything with a selected Folder, However I en-coded that if there is another folder within a selected folder the user is to compressed or zip certain folder
-     * or to copy all files certain folder to proposed folder to be encrypted.
-     * 
-     * Your Secondary task is to start working on the UI to " Open Existing Folder " , this include building a UI (I spent a lot of time on the UI).
-     * Don't start implementing the database first in to the project there are properties I am keen on adding to the Project.
-     */
+    
     public partial class Form1 : Form
     {
         FolderSystem systemFiles = new FolderSystem();
@@ -109,7 +98,7 @@ namespace WindowsFormsApp3
 
         private void btnEncrypt_Click(object sender, EventArgs e)
         {
-           
+
             if (password.Length < 1)
             {
                 MessageBox.Show("A Folder Password must be Entered: You can AutoGenerate the Password \t");
@@ -117,10 +106,14 @@ namespace WindowsFormsApp3
             else
             {
                 FileInfo fileInfo = new FileInfo(folderBrowser);
-                string saveFile = string.Format(@"{0}\{1}.locked", fileInfo.DirectoryName, fileInfo.Name);
+                               
+                Directory.CreateDirectory(string.Format(@"{0}\{1}_Encrypted", fileInfo.DirectoryName, fileInfo.Name));
+
+                string saveFile = string.Format(@"{0}\{1}_Encrypted\{1}.locked", fileInfo.DirectoryName, fileInfo.Name);
 
                 using (ZipFile zip = new ZipFile())
                 {
+                    //Loop Thur the Folders
                     foreach (FilesFolder files in changingFiles)
                     {
                         // byte[] pass = Encoding.UTF8.GetBytes(files.Password); // Convert to 16 byte to used in the Key and IV for Encryption
@@ -139,18 +132,26 @@ namespace WindowsFormsApp3
                             hashed += hash;
                         }
 
-                        files.Encrypted = true;
+                        // If the password is null then it will be false
+                        if (files.Password.Equals("null"))
+                        {
+                            files.Encrypted = false;
+                        }
+                        else
+                        {
+                            files.Encrypted = true;
+                        }
                         files.EncryptionAlg = "AES";
 
-                        if(hashingCombo.Text.Length < 1)
+                        if (hashingCombo.Text.Length < 1)
                         {
-                            files.Password = hashingCombo.PromptText;
+                            files.PasswordAlg = hashingCombo.PromptText;
                         }
                         else
                         {
                             files.PasswordAlg = hashingCombo.Text;
                         }
-                        
+
                         //Add Password to Encrypted File with Hashed Password
                         zip.Password = hashed;
                         //Add 
@@ -160,15 +161,15 @@ namespace WindowsFormsApp3
 
                     zip.Save(saveFile);
                 }
-                
+
                 // Get the Folder Password and Encrypt the Zip Folder
                 byte[] folderkeyIv = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(password));
                 //Folder is Encrypted 
                 EncryptFile(saveFile, folderkeyIv, folderkeyIv);
 
-                if(recoveryChks.Checked == true)
+                if (recoveryChks.Checked == true)
                 {
-                    if(hashingCombo.Text.Length < 1)
+                    if (hashingCombo.Text.Length < 1)
                     {
                         changingFiles.Add(new FilesFolder
                         {
@@ -194,14 +195,14 @@ namespace WindowsFormsApp3
 
                         });
                     }
-                   
+
                     string json = JsonConvert.SerializeObject(changingFiles);
 
-                    string recoverypath = string.Format(@"{0}\{1}.txt", fileInfo.DirectoryName, fileInfo.Name);
+                    string recoverypath = string.Format(@"{0}\{1}_Encrypted\{1}.txt", fileInfo.DirectoryName, fileInfo.Name);
 
                     SaveRecovery(ASCIIEncoding.UTF8.GetBytes(json), recoverypath);
 
-                   
+
                 }
                 else
                 {
@@ -232,12 +233,12 @@ namespace WindowsFormsApp3
                         });
                     }
                     string json = JsonConvert.SerializeObject(changingFiles);
-                    string recoverypath1 = string.Format(@"{0}\UnEncrypted.txt", fileInfo.DirectoryName);
+                    string recoverypath1 = string.Format(@"{0}\{1}_Encrypted\UnEncrypted.txt", fileInfo.DirectoryName, fileInfo.Name);
                     using (StreamWriter file = new StreamWriter(recoverypath1))
                     {
                         file.WriteLine(json);
                     }
-                    
+
                 }
                 //Display Where Folder is Saved
                 savePoint.Text = saveFile;
@@ -254,7 +255,7 @@ namespace WindowsFormsApp3
 
                 MessageBox.Show("Your Encrypted Folder is At\t" + saveFile);
             }
-            
+
 
         }
         private void SaveRecovery(byte[] data,string filepath)
@@ -434,7 +435,7 @@ namespace WindowsFormsApp3
         //Get the Changes to Folder Made to the DataGrid
         private void metroGrid1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            while(e.ColumnIndex != 0 && e.ColumnIndex != 1 && e.ColumnIndex != 3 && e.ColumnIndex != 4 && e.ColumnIndex != 5)
+            while (e.ColumnIndex != 0 && e.ColumnIndex != 1 && e.ColumnIndex != 3 && e.ColumnIndex != 4 && e.ColumnIndex != 5)
             {
                 string passwordChange = metroGrid1[e.ColumnIndex, e.RowIndex].Value.ToString();
 
@@ -442,11 +443,11 @@ namespace WindowsFormsApp3
 
                 foreach (FilesFolder folder in changingFiles)
                 {
-                    if(folder.Name.Equals(fileName))
+                    if (folder.Name.Equals(fileName))
                     {
                         folder.Password = passwordChange;
                         folder.Encrypted = true;
-                        MessageBox.Show("Password Change to \t" + passwordChange);
+                        MessageBox.Show("Make sure to Click on \"Update Files Password\"After Making \"All Changes\" to Files \n Changed Password: " + passwordChange);
                     }
                 }
                 break;
@@ -457,7 +458,7 @@ namespace WindowsFormsApp3
         private void metroButton1_Click(object sender, EventArgs e)
         {
             metroGrid1.DataSource = changingFiles;
-            MessageBox.Show("Updated Made to File System: Any More Changes to Password");
+            MessageBox.Show("Updated Made to File System: Any More Changes to Password, if not Proceed to Encryption Options");
         }
     }
 }

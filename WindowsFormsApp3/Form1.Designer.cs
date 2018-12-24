@@ -66,7 +66,6 @@
             this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
             this.metroComboBox1 = new MetroFramework.Controls.MetroComboBox();
             this.OpenTab = new System.Windows.Forms.TabPage();
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.metroPanel4 = new MetroFramework.Controls.MetroPanel();
             this.btnLockFolder = new MetroFramework.Controls.MetroButton();
             this.metroLabel10 = new MetroFramework.Controls.MetroLabel();
@@ -80,6 +79,7 @@
             this.metroLabel9 = new MetroFramework.Controls.MetroLabel();
             this.txtboxUser = new MetroFramework.Controls.MetroTextBox();
             this.metroLabel11 = new MetroFramework.Controls.MetroLabel();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.metroTabControl1.SuspendLayout();
             this.CreateTab.SuspendLayout();
             this.metroTabControl2.SuspendLayout();
@@ -100,7 +100,7 @@
             this.metroTabControl1.Controls.Add(this.OpenTab);
             this.metroTabControl1.Location = new System.Drawing.Point(12, 12);
             this.metroTabControl1.Name = "metroTabControl1";
-            this.metroTabControl1.SelectedIndex = 1;
+            this.metroTabControl1.SelectedIndex = 0;
             this.metroTabControl1.Size = new System.Drawing.Size(776, 426);
             this.metroTabControl1.TabIndex = 0;
             this.metroTabControl1.UseSelectable = true;
@@ -346,6 +346,7 @@
             // savePoint
             // 
             this.savePoint.AutoSize = true;
+            this.savePoint.FontSize = MetroFramework.MetroLabelSize.Small;
             this.savePoint.Location = new System.Drawing.Point(5, 222);
             this.savePoint.Name = "savePoint";
             this.savePoint.Size = new System.Drawing.Size(110, 19);
