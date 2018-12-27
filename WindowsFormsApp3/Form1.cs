@@ -36,11 +36,7 @@ namespace WindowsFormsApp3
            // metroTabControl2.SelectTab(0);
             passranBtn.Click += PassranBtn_Click;
 
-            foreach(var item in items)
-            {
-                hashingCombo.Items.Add(item);
-            }
-          
+            hashingCombo.DataSource = items;
 
             
         }
@@ -169,33 +165,16 @@ namespace WindowsFormsApp3
 
                 if (recoveryChks.Checked == true)
                 {
-                    if (hashingCombo.Text.Length < 1)
+                    changingFiles.Add(new FilesFolder
                     {
-                        changingFiles.Add(new FilesFolder
-                        {
-                            Name = string.Format("{0}.locked", fileInfo.Name),
-                            Encrypted = true,
-                            Password = password,
-                            Paths = saveFile,
-                            EncryptionAlg = "AES",
-                            PasswordAlg = hashingCombo.PromptText
+                        Name = string.Format("{0}.locked", fileInfo.Name),
+                        Encrypted = true,
+                        Password = password,
+                        Paths = saveFile,
+                        EncryptionAlg = "AES",
+                        PasswordAlg = hashingCombo.Text
 
-                        });
-                    }
-                    else
-                    {
-                        changingFiles.Add(new FilesFolder
-                        {
-                            Name = string.Format("{0}.locked", fileInfo.Name),
-                            Encrypted = true,
-                            Password = password,
-                            Paths = saveFile,
-                            EncryptionAlg = "AES",
-                            PasswordAlg = hashingCombo.Text
-
-                        });
-                    }
-
+                    });
                     string json = JsonConvert.SerializeObject(changingFiles);
 
                     string recoverypath = string.Format(@"{0}\{1}_Encrypted\{1}.txt", fileInfo.DirectoryName, fileInfo.Name);
@@ -206,32 +185,16 @@ namespace WindowsFormsApp3
                 }
                 else
                 {
-                    if (hashingCombo.Text.Length < 1)
+                    changingFiles.Add(new FilesFolder
                     {
-                        changingFiles.Add(new FilesFolder
-                        {
-                            Name = string.Format("{0}.locked", fileInfo.Name),
-                            Encrypted = true,
-                            Password = password,
-                            Paths = saveFile,
-                            EncryptionAlg = "AES",
-                            PasswordAlg = hashingCombo.PromptText
+                        Name = string.Format("{0}.locked", fileInfo.Name),
+                        Encrypted = true,
+                        Password = password,
+                        Paths = saveFile,
+                        EncryptionAlg = "AES",
+                        PasswordAlg = hashingCombo.Text
 
-                        });
-                    }
-                    else
-                    {
-                        changingFiles.Add(new FilesFolder
-                        {
-                            Name = string.Format("{0}.locked", fileInfo.Name),
-                            Encrypted = true,
-                            Password = password,
-                            Paths = saveFile,
-                            EncryptionAlg = "AES",
-                            PasswordAlg = hashingCombo.Text
-
-                        });
-                    }
+                    });
                     string json = JsonConvert.SerializeObject(changingFiles);
                     string recoverypath1 = string.Format(@"{0}\{1}_Encrypted\UnEncrypted.txt", fileInfo.DirectoryName, fileInfo.Name);
                     using (StreamWriter file = new StreamWriter(recoverypath1))
@@ -254,6 +217,7 @@ namespace WindowsFormsApp3
                 metroGrid1.DataSource = null;
 
                 MessageBox.Show("Your Encrypted Folder is At\t" + saveFile);
+                //hashingCombo.DataSource = items;
             }
 
 

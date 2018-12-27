@@ -349,7 +349,7 @@
             this.savePoint.FontSize = MetroFramework.MetroLabelSize.Small;
             this.savePoint.Location = new System.Drawing.Point(5, 222);
             this.savePoint.Name = "savePoint";
-            this.savePoint.Size = new System.Drawing.Size(110, 19);
+            this.savePoint.Size = new System.Drawing.Size(92, 15);
             this.savePoint.TabIndex = 9;
             this.savePoint.Text = "Folder Save Here";
             // 
